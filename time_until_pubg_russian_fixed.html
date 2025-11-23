@@ -1,0 +1,97 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>До PUBG Mobile</title>
+  <style>
+    body {
+      background: #fafafa;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      color: #111;
+    }
+    h1 {
+      font-weight: 500;
+      font-size: 28px;
+      margin-bottom: 20px;
+      letter-spacing: -0.5px;
+      text-align: center;
+    }
+    #timer {
+      font-size: 48px;
+      font-weight: 300;
+      letter-spacing: -1px;
+    }
+    .sad {
+      font-size: 40px;
+      opacity: 0.5;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>До того, как я снова сыграю в PUBG Mobile</h1>
+  <div id="timer">--:--:--</div>
+  <div class="sad">😔</div>
+
+  <script>
+    function getNowInLondon() {
+      const now = new Date();
+      const fmt = new Intl.DateTimeFormat('en-GB', {
+        timeZone: 'Europe/London',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false
+      });
+      const parts = fmt.formatToParts(now);
+      const map = {};
+      for (const p of parts) {
+        if (p.type !== 'literal') {
+          map[p.type] = p.value;
+        }
+      }
+      // month is 0-based in JS Date
+      return new Date(
+        Number(map.year),
+        Number(map.month) - 1,
+        Number(map.day),
+        Number(map.hour),
+        Number(map.minute),
+        Number(map.second),
+        0
+      );
+    }
+
+    function updateCountdown() {
+      const nowUK = getNowInLondon();
+      let target = new Date(nowUK.getTime());
+      target.setHours(9, 52, 37, 0);
+
+      if (nowUK > target) {
+        target.setDate(target.getDate() + 1);
+      }
+
+      const diff = target - nowUK;
+
+      const hrs = String(Math.floor(diff / 1000 / 60 / 60)).padStart(2, "0");
+      const mins = String(Math.floor(diff / 1000 / 60 % 60)).padStart(2, "0");
+      const secs = String(Math.floor(diff / 1000 % 60)).padStart(2, "0");
+
+      document.getElementById("timer").textContent = `${hrs}:${mins}:${secs}`;
+    }
+
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+  </script>
+</body>
+</html>
